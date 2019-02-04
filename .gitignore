@@ -4,6 +4,7 @@ build/*
 *.egg-info/*
 .idea
 *.DS_Store
+.venv/
 env/
 .tox
 .coverage

@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-from django.template.loader import get_template, render_to_string
-from django.test.utils import override_settings
+from __future__ import print_function
 import os
+
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import TestCase
 from django.core.files import File as DjangoFile
+from django.test import TestCase
+from django.test.utils import override_settings
 
 from cms import api
 from cms.models import CMSPlugin
-from cms.test_utils.testcases import BaseCMSTestCase, URL_CMS_PLUGIN_ADD, URL_CMS_PLUGIN_EDIT
-from cms.utils import get_cms_setting
+from cms.test_utils.testcases import BaseCMSTestCase, URL_CMS_PLUGIN_ADD
+from cms.utils.conf import get_cms_setting
 
 from filer.models import Folder, Image, File
 from filer.tests.helpers import create_image
@@ -91,6 +92,7 @@ class GalleryPluginTestCase(TestCase, BaseCMSTestCase):
         }
 
         response = self.client.post(URL_CMS_PLUGIN_ADD, plugin_data)
+        print(response)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(CMSPlugin.objects.exists())
         # this should really be the below test... but it turns out to be tricky to do

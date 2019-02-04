@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from functools import partial
-
 from django.db import models
 from django.utils.html import strip_tags
 from django.utils.translation import ugettext_lazy as _
@@ -12,27 +10,7 @@ from djangocms_text_ckeditor.fields import HTMLField
 from filer.fields.folder import FilerFolderField
 from filer.fields.image import FilerImageField
 
-from . import compat
 from .utils import get_additional_styles
-
-
-if compat.LTE_DJANGO_1_6:
-    # related_name='%(app_label)s_%(class)s' does not work on  Django 1.6
-    CMSPluginField = partial(
-        models.OneToOneField,
-        to=CMSPlugin,
-        related_name='+',
-        parent_link=True,
-    )
-else:
-    # Once djangoCMS < 3.3.1 support is dropped
-    # Remove the explicit cmsplugin_ptr field declarations
-    CMSPluginField = partial(
-        models.OneToOneField,
-        to=CMSPlugin,
-        related_name='%(app_label)s_%(class)s',
-        parent_link=True,
-    )
 
 
 class GalleryPlugin(CMSPlugin):
@@ -47,14 +25,29 @@ class GalleryPlugin(CMSPlugin):
         ('slide', _('Slide'))
     )
 
-    cmsplugin_ptr = CMSPluginField()
     style = models.CharField(
-        _('Style'), choices=STYLE_CHOICES + get_additional_styles(), default=STANDARD, max_length=50)
+        _('Style'),
+        choices=STYLE_CHOICES + get_additional_styles(),
+        default=STANDARD,
+        max_length=50
+    )
     extra_styles = models.CharField(
-        _('Extra styles'), max_length=50, blank=True,
-        help_text=_('An arbitrary string of CSS classes to add'))
-    engine = models.CharField(_('Engine'), choices=ENGINE_CHOICES, default=ENGINE_CHOICES[0][0], max_length=50)
-    timeout = models.IntegerField(_('Timeout'), default=5000, help_text=_("Set to 0 to disable autoplay"))
+        _('Extra styles'),
+        max_length=50,
+        blank=True,
+        help_text=_('An arbitrary string of CSS classes to add')
+    )
+    engine = models.CharField(
+        _('Engine'),
+        choices=ENGINE_CHOICES,
+        default=ENGINE_CHOICES[0][0],
+        max_length=50
+    )
+    timeout = models.IntegerField(
+        _('Timeout'),
+        default=5000,
+        help_text=_("Set to 0 to disable autoplay")
+    )
     duration = models.IntegerField(_('Duration'), default=300)
     shuffle = models.BooleanField(_('Shuffle slides'), default=False)
 
@@ -78,8 +71,11 @@ class SlidePlugin(CMSPlugin):
         ('_top', _('topmost frame')),
     )
 
-    cmsplugin_ptr = CMSPluginField()
-    image = FilerImageField(verbose_name=_('image'), blank=True, null=True)
+    image = FilerImageField(
+        verbose_name=_('image'),
+        blank=True,
+        null=True
+    )
     content = HTMLField("Content", blank=True, null=True)
     url = models.URLField(_("Link"), blank=True, null=True)
     page_link = PageField(
@@ -138,7 +134,6 @@ class SlidePlugin(CMSPlugin):
 
 
 class SlideFolderPlugin(CMSPlugin):
-    cmsplugin_ptr = CMSPluginField()
     folder = FilerFolderField(verbose_name=_('folder'))
 
     def copy_relations(self, oldinstance):

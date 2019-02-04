@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('filer', '0002_auto_20150606_2003'),
-        ('cms', '__latest__'),
+        ('cms', '__first__'),
     ]
 
     operations = [
